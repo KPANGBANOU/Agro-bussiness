@@ -5,24 +5,27 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
-class TypeLivres {
+class TypeBierres {
   final String uid;
   final String nom;
+  final String user_uid;
   final String created_at;
   final String updated_at;
-  TypeLivres({
+  TypeBierres({
     required this.uid,
     required this.nom,
+    required this.user_uid,
     required this.created_at,
     required this.updated_at,
   });
 
-  factory TypeLivres.FromFirestore(DocumentSnapshot document) {
+  factory TypeBierres.FromFirestore(DocumentSnapshot document) {
     Timestamp created = (document.data() as Map)['created_at'];
     Timestamp updated = (document.data() as Map)['updated_at'];
-    return TypeLivres(
+    return TypeBierres(
         uid: document.id,
         nom: (document.data() as Map)['nom'],
+        user_uid: (document.data() as Map)['user_uid'],
         created_at: DateFormat("dd-MM-yyyy").format(created.toDate()) +
             " à " +
             DateFormat("HH:mm:ss").format(created.toDate()),
@@ -31,15 +34,17 @@ class TypeLivres {
             DateFormat("HH:mm:ss").format(updated.toDate()));
   }
 
-  TypeLivres copyWith({
+  TypeBierres copyWith({
     String? uid,
     String? nom,
+    String? user_uid,
     String? created_at,
     String? updated_at,
   }) {
-    return TypeLivres(
+    return TypeBierres(
       uid: uid ?? this.uid,
       nom: nom ?? this.nom,
+      user_uid: user_uid ?? this.user_uid,
       created_at: created_at ?? this.created_at,
       updated_at: updated_at ?? this.updated_at,
     );
@@ -50,16 +55,18 @@ class TypeLivres {
 
     result.addAll({'uid': uid});
     result.addAll({'nom': nom});
+    result.addAll({'user_uid': user_uid});
     result.addAll({'created_at': created_at});
     result.addAll({'updated_at': updated_at});
 
     return result;
   }
 
-  factory TypeLivres.fromMap(Map<String, dynamic> map) {
-    return TypeLivres(
+  factory TypeBierres.fromMap(Map<String, dynamic> map) {
+    return TypeBierres(
       uid: map['uid'] ?? '',
       nom: map['nom'] ?? '',
+      user_uid: map['user_uid'] ?? '',
       created_at: map['created_at'] ?? '',
       updated_at: map['updated_at'] ?? '',
     );
@@ -67,21 +74,22 @@ class TypeLivres {
 
   String toJson() => json.encode(toMap());
 
-  factory TypeLivres.fromJson(String source) =>
-      TypeLivres.fromMap(json.decode(source));
+  factory TypeBierres.fromJson(String source) =>
+      TypeBierres.fromMap(json.decode(source));
 
   @override
   String toString() {
-    return 'TypeLivres(uid: $uid, nom: $nom, created_at: $created_at, updated_at: $updated_at)';
+    return 'TypeBierres(uid: $uid, nom: $nom, user_uid: $user_uid, created_at: $created_at, updated_at: $updated_at)';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is TypeLivres &&
+    return other is TypeBierres &&
         other.uid == uid &&
         other.nom == nom &&
+        other.user_uid == user_uid &&
         other.created_at == created_at &&
         other.updated_at == updated_at;
   }
@@ -90,6 +98,7 @@ class TypeLivres {
   int get hashCode {
     return uid.hashCode ^
         nom.hashCode ^
+        user_uid.hashCode ^
         created_at.hashCode ^
         updated_at.hashCode;
   }

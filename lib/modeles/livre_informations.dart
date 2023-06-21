@@ -2,11 +2,13 @@
 
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class LivreInformations {
   final String uid;
   final String livre_uid;
   final String type_livre_uid;
-  final int nombre_initiak;
+  final int nombre_initial;
   final int nombre_initial_cumule;
   final int nombre_physique;
   final int seuil_approvisionnement;
@@ -18,7 +20,7 @@ class LivreInformations {
     required this.uid,
     required this.livre_uid,
     required this.type_livre_uid,
-    required this.nombre_initiak,
+    required this.nombre_initial,
     required this.nombre_initial_cumule,
     required this.nombre_physique,
     required this.seuil_approvisionnement,
@@ -28,13 +30,28 @@ class LivreInformations {
     required this.montant_vendu_cumule,
   });
 
-  factory 
+  factory LivreInformations.FromFirestore(DocumentSnapshot document) {
+    return LivreInformations(
+        uid: document.id,
+        livre_uid: (document.data() as Map)['livre_uid'],
+        type_livre_uid: (document.data() as Map)['type_livre_uid'],
+        nombre_initial: (document.data() as Map)['nombre_initial'],
+        nombre_initial_cumule:
+            (document.data() as Map)['nombre_initial_cumule'],
+        nombre_physique: (document.data() as Map)['nombre_physique'],
+        seuil_approvisionnement:
+            (document.data() as Map)['seuil_approvisionnement'],
+        benefice: (document.data() as Map)['benefice'],
+        benefice_cumule: (document.data() as Map)['benefice_cumule'],
+        montant_vendu: (document.data() as Map)['montant_vendu'],
+        montant_vendu_cumule: (document.data() as Map)['montant_vendu_cumule']);
+  }
 
   LivreInformations copyWith({
     String? uid,
     String? livre_uid,
     String? type_livre_uid,
-    int? nombre_initiak,
+    int? nombre_initial,
     int? nombre_initial_cumule,
     int? nombre_physique,
     int? seuil_approvisionnement,
@@ -47,7 +64,7 @@ class LivreInformations {
       uid: uid ?? this.uid,
       livre_uid: livre_uid ?? this.livre_uid,
       type_livre_uid: type_livre_uid ?? this.type_livre_uid,
-      nombre_initiak: nombre_initiak ?? this.nombre_initiak,
+      nombre_initial: nombre_initial ?? this.nombre_initial,
       nombre_initial_cumule:
           nombre_initial_cumule ?? this.nombre_initial_cumule,
       nombre_physique: nombre_physique ?? this.nombre_physique,
@@ -66,7 +83,7 @@ class LivreInformations {
     result.addAll({'uid': uid});
     result.addAll({'livre_uid': livre_uid});
     result.addAll({'type_livre_uid': type_livre_uid});
-    result.addAll({'nombre_initiak': nombre_initiak});
+    result.addAll({'nombre_initial': nombre_initial});
     result.addAll({'nombre_initial_cumule': nombre_initial_cumule});
     result.addAll({'nombre_physique': nombre_physique});
     result.addAll({'seuil_approvisionnement': seuil_approvisionnement});
@@ -83,7 +100,7 @@ class LivreInformations {
       uid: map['uid'] ?? '',
       livre_uid: map['livre_uid'] ?? '',
       type_livre_uid: map['type_livre_uid'] ?? '',
-      nombre_initiak: map['nombre_initiak']?.toInt() ?? 0,
+      nombre_initial: map['nombre_initial']?.toInt() ?? 0,
       nombre_initial_cumule: map['nombre_initial_cumule']?.toInt() ?? 0,
       nombre_physique: map['nombre_physique']?.toInt() ?? 0,
       seuil_approvisionnement: map['seuil_approvisionnement']?.toInt() ?? 0,
@@ -101,7 +118,7 @@ class LivreInformations {
 
   @override
   String toString() {
-    return 'LivreInformations(uid: $uid, livre_uid: $livre_uid, type_livre_uid: $type_livre_uid, nombre_initiak: $nombre_initiak, nombre_initial_cumule: $nombre_initial_cumule, nombre_physique: $nombre_physique, seuil_approvisionnement: $seuil_approvisionnement, benefice: $benefice, benefice_cumule: $benefice_cumule, montant_vendu: $montant_vendu, montant_vendu_cumule: $montant_vendu_cumule)';
+    return 'LivreInformations(uid: $uid, livre_uid: $livre_uid, type_livre_uid: $type_livre_uid, nombre_initial: $nombre_initial, nombre_initial_cumule: $nombre_initial_cumule, nombre_physique: $nombre_physique, seuil_approvisionnement: $seuil_approvisionnement, benefice: $benefice, benefice_cumule: $benefice_cumule, montant_vendu: $montant_vendu, montant_vendu_cumule: $montant_vendu_cumule)';
   }
 
   @override
@@ -112,7 +129,7 @@ class LivreInformations {
         other.uid == uid &&
         other.livre_uid == livre_uid &&
         other.type_livre_uid == type_livre_uid &&
-        other.nombre_initiak == nombre_initiak &&
+        other.nombre_initial == nombre_initial &&
         other.nombre_initial_cumule == nombre_initial_cumule &&
         other.nombre_physique == nombre_physique &&
         other.seuil_approvisionnement == seuil_approvisionnement &&
@@ -127,7 +144,7 @@ class LivreInformations {
     return uid.hashCode ^
         livre_uid.hashCode ^
         type_livre_uid.hashCode ^
-        nombre_initiak.hashCode ^
+        nombre_initial.hashCode ^
         nombre_initial_cumule.hashCode ^
         nombre_physique.hashCode ^
         seuil_approvisionnement.hashCode ^
