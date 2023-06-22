@@ -1,12 +1,13 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, prefer_interpolation_to_compose_strings
 
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class Livres {
   final String uid;
-  final String numero_sbin;
+  final String numero_isbn;
   final String nom;
   final String edition_uid;
   final String user_uid;
@@ -14,7 +15,7 @@ class Livres {
   final String updated_at;
   Livres({
     required this.uid,
-    required this.numero_sbin,
+    required this.numero_isbn,
     required this.nom,
     required this.edition_uid,
     required this.user_uid,
@@ -26,17 +27,21 @@ class Livres {
     Timestamp updated = (document.data() as Map)['updated_at'];
     return Livres(
         uid: document.id,
-        numero_sbin: (document.data() as Map),
-        nom: nom,
-        edition_uid: edition_uid,
-        user_uid: user_uid,
-        created_at: created_at,
-        updated_at: updated_at);
+        numero_isbn: (document.data() as Map)['numero_isbn'],
+        nom: (document.data() as Map)['nom'],
+        edition_uid: (document.data() as Map)['edition_uid'],
+        user_uid: (document.data() as Map)['user_uid'],
+        created_at: DateFormat('dd-MM-yyyy').format(created.toDate()) +
+            " à " +
+            DateFormat("HH:mm:ss").format(created.toDate()),
+        updated_at: DateFormat("dd-MM-yyyy").format(updated.toDate()) +
+            " à " +
+            DateFormat("HH:mm:ss").format(updated.toDate()));
   }
 
   Livres copyWith({
     String? uid,
-    String? numero_sbin,
+    String? numero_isbn,
     String? nom,
     String? edition_uid,
     String? user_uid,
@@ -45,7 +50,7 @@ class Livres {
   }) {
     return Livres(
       uid: uid ?? this.uid,
-      numero_sbin: numero_sbin ?? this.numero_sbin,
+      numero_isbn: numero_isbn ?? this.numero_isbn,
       nom: nom ?? this.nom,
       edition_uid: edition_uid ?? this.edition_uid,
       user_uid: user_uid ?? this.user_uid,
@@ -58,7 +63,7 @@ class Livres {
     final result = <String, dynamic>{};
 
     result.addAll({'uid': uid});
-    result.addAll({'numero_sbin': numero_sbin});
+    result.addAll({'numero_isbn': numero_isbn});
     result.addAll({'nom': nom});
     result.addAll({'edition_uid': edition_uid});
     result.addAll({'user_uid': user_uid});
@@ -71,7 +76,7 @@ class Livres {
   factory Livres.fromMap(Map<String, dynamic> map) {
     return Livres(
       uid: map['uid'] ?? '',
-      numero_sbin: map['numero_sbin'] ?? '',
+      numero_isbn: map['numero_isbn'] ?? '',
       nom: map['nom'] ?? '',
       edition_uid: map['edition_uid'] ?? '',
       user_uid: map['user_uid'] ?? '',
@@ -86,7 +91,7 @@ class Livres {
 
   @override
   String toString() {
-    return 'Livres(uid: $uid, numero_sbin: $numero_sbin, nom: $nom, edition_uid: $edition_uid, user_uid: $user_uid, created_at: $created_at, updated_at: $updated_at)';
+    return 'Livres(uid: $uid, numero_isbn: $numero_isbn, nom: $nom, edition_uid: $edition_uid, user_uid: $user_uid, created_at: $created_at, updated_at: $updated_at)';
   }
 
   @override
@@ -95,7 +100,7 @@ class Livres {
 
     return other is Livres &&
         other.uid == uid &&
-        other.numero_sbin == numero_sbin &&
+        other.numero_isbn == numero_isbn &&
         other.nom == nom &&
         other.edition_uid == edition_uid &&
         other.user_uid == user_uid &&
@@ -106,7 +111,7 @@ class Livres {
   @override
   int get hashCode {
     return uid.hashCode ^
-        numero_sbin.hashCode ^
+        numero_isbn.hashCode ^
         nom.hashCode ^
         edition_uid.hashCode ^
         user_uid.hashCode ^
